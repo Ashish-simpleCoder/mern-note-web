@@ -1,0 +1,28 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "pnpm clean && tsc",
+    "start": "node build/index.js",
+    "clean": "rm -rf build"
+  },
+  "keywords": [],
+  "author": "ashish-simpleCoder",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.24",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
