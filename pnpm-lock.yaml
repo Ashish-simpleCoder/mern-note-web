@@ -111,6 +111,9 @@ importers:
       react-hot-toast:
         specifier: ^2.4.1
         version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
+      react-icons:
+        specifier: ^5.1.0
+        version: 5.1.0(react@18.2.0)
       react-router-dom:
         specifier: ^6.22.3
         version: 6.22.3(react-dom@18.2.0)(react@18.2.0)
@@ -4907,6 +4910,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - csstype
+    dev: false
+
+  /react-icons@5.1.0(react@18.2.0):
+    resolution: {integrity: sha512-D3zug1270S4hbSlIRJ0CUS97QE1yNNKDjzQe3HqY0aefp2CBn9VgzgES27sRR2gOvFK+0CNx/BW0ggOESp6fqQ==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

@@ -14,7 +14,7 @@ export default function LoginPage() {
    }
 
    if (Cookie.get('access-token')) {
-      return <Navigate to='/login' replace />
+      return <Navigate to='/' replace />
    }
 
    return (
