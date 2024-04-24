@@ -1,6 +1,6 @@
 import { FormEventHandler, useState } from 'react'
 import { loginService } from '../services/login.service'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Cookie } from '../lib/cookie'
 
 export default function LoginPage() {
@@ -49,7 +49,14 @@ export default function LoginPage() {
                   />
                </div>
             </div>
+
             <div className='px-4 py-8 mt-auto'>
+               <span className='mb-2 block'>
+                  Don't have an account?{' '}
+                  <Link to='/register' className='text-blue-600 underline'>
+                     Signup here
+                  </Link>
+               </span>
                <button className='bg-green-500 w-full py-2 rounded-md text-lg'>Login</button>
             </div>
          </form>

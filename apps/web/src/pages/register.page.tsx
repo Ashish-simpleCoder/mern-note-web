@@ -1,9 +1,64 @@
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Cookie } from '../lib/cookie'
+import { FormEventHandler, useState } from 'react'
+import { registerService } from '../services/register.service'
 
 export default function RegisterPage() {
+   const [email, setEmail] = useState('')
+   const [password, setPassowrd] = useState('')
+   const navigate = useNavigate()
+
+   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+      e.preventDefault()
+      registerService({ email, password }, { onSuccess: () => navigate('/') })
+   }
+
    if (Cookie.get('access-token')) {
       return <Navigate to='/login' replace />
    }
-   return <div>register</div>
+   return (
+      <div className='max-md:px-4'>
+         <form
+            onSubmit={handleSubmit}
+            className='max-w-md h-[450px] w-full mx-auto mt-40 bg-blue-100 rounded-lg shadow-lg flex flex-col'
+         >
+            <h1 className='text-3xl text-center py-8'>Signup</h1>
+            <div className='flex flex-col gap-5 px-4'>
+               <div className='form-group flex flex-col gap-1'>
+                  <label htmlFor='email' className='text-lg'>
+                     Email
+                  </label>
+                  <input
+                     type='text'
+                     id='email'
+                     onChange={(e) => setEmail(e.target.value)}
+                     className='px-1 py-2 rounded-sm'
+                  />
+               </div>
+
+               <div className='form-group flex flex-col gap-1'>
+                  <label htmlFor='password' className='text-lg'>
+                     Password
+                  </label>
+                  <input
+                     type='text'
+                     id='password'
+                     onChange={(e) => setPassowrd(e.target.value)}
+                     className='px-1 py-2 rounded-sm'
+                  />
+               </div>
+            </div>
+
+            <div className='px-4 py-8 mt-auto'>
+               <span className='mb-2 block'>
+                  Already have an account?{' '}
+                  <Link to='/login' className='text-blue-600 underline'>
+                     Login here
+                  </Link>
+               </span>
+               <button className='bg-green-500 w-full py-2 rounded-md text-lg'>Signup</button>
+            </div>
+         </form>
+      </div>
+   )
 }
