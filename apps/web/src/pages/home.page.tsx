@@ -1,3 +1,3 @@
 export default function HomePage() {
-   return <div>home</div>
+   return <main className='px-10'></main>
 }

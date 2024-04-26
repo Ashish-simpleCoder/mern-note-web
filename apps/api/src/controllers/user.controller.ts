@@ -6,6 +6,12 @@ import { compare } from 'bcrypt'
 export async function userRegister(req: Request, res: Response, next: NextFunction) {
    try {
       const user = await UserModel.create(req.body)
+      if (!user) {
+         return res.status(500).send({
+            status: 'error',
+            message: 'Failed to register the user.',
+         })
+      }
       res.status(201).send({
          status: 'success',
          message: 'User registered successfully.',
