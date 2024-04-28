@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
+import type { User } from '../models/user.model'
 import { NoteModel } from '../models/note.model'
-import { User } from '../models/user.model'
 
 export async function noteCreate(req: Request, res: Response, next: NextFunction) {
    try {

@@ -1,7 +1,8 @@
+import type { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
-import { Types } from 'mongoose'
 import { ENV } from '../config/env.config'
-import { ExpireTime, Expires } from '../const/expires.in'
+import type { ExpireTime } from '../const/expires.in'
+import { Expires } from '../const/expires.in'
 
 type Options = {
    expiresIn?: ExpireTime

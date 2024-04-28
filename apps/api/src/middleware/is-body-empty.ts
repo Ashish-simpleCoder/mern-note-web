@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import { isEmptyObj } from '../utils'
 
 export function isBodyEmpty(req: Request, res: Response, next: NextFunction) {

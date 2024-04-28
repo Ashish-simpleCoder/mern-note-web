@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import { generateJwtToken } from '../lib/generate-jwt-token'
 import { UserModel } from '../models/user.model'
 import { compare } from 'bcrypt'

@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
+import type { User } from '../models/user.model'
 import { verify } from 'jsonwebtoken'
 import { decodeJwtToken } from '../lib/decode-jwt-token'
-import { User } from '../models/user.model'
 
 export function authUser(req: Request, res: Response, next: NextFunction) {
    const secret = process.env.TOKEN_SECRET || 'yoursecretkey'
