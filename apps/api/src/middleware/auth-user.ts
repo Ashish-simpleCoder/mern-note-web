@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import type { User } from '../models/user.model'
 import { verify } from 'jsonwebtoken'
-import { decodeJwtToken } from '../lib/decode-jwt-token'
 
 export function authUser(req: Request, res: Response, next: NextFunction) {
    const secret = process.env.TOKEN_SECRET || 'yoursecretkey'
@@ -11,13 +10,8 @@ export function authUser(req: Request, res: Response, next: NextFunction) {
    }
 
    verify(token, secret, { complete: true }, (err, decoded_token) => {
-      if (err) return res.send({ status: 401, error: 'unauthorized user' })
-
-      const user = decodeJwtToken(token)
-      if (!user) {
-         return res.send({ status: 401, error: 'unauthorized user' })
-      }
-      ;(req as Request & { user: User }).user = user as User
+      if (err || !decoded_token) return res.send({ status: 401, error: 'unauthorized user' })
+      ;(req as Request & { user: User }).user = decoded_token.payload as User
       next()
    })
 }

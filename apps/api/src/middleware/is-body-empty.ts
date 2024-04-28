@@ -3,7 +3,7 @@ import { isEmptyObj } from '../utils'
 
 export function isBodyEmpty(req: Request, res: Response, next: NextFunction) {
    if (isEmptyObj(req.body)) {
-      return res.status(400).send({ status: 'error', message: 'Please add body' })
+      return res.status(400).send({ status: 'error', message: 'Please provide body for the request' })
    }
    next()
 }
