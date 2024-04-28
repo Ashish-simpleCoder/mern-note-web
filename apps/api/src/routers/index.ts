@@ -13,7 +13,7 @@ router.route('/api/user/logout').get(userLogout)
 
 // notes
 router.post('/api/user/note', authUser, isBodyEmpty, noteCreate)
-router.post('/api/user/notes', authUser, getAllNotes)
+router.get('/api/user/notes', authUser, getAllNotes)
 router.use(authUser).route('/api/user/note/:id').patch(noteUpdate).delete(noteDelete)
 
 export default router
