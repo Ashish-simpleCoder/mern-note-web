@@ -14,6 +14,11 @@ router.route('/api/user/logout').get(userLogout)
 // notes
 router.post('/api/user/note', authUser, isBodyEmpty, noteCreate)
 router.get('/api/user/notes', authUser, getAllNotes)
-router.use(authUser).route('/api/user/note/:id').patch(noteUpdate).delete(noteDelete)
+router.route('/api/user/note/:id').patch(authUser,noteUpdate).delete(authUser,noteDelete)
+
+router.get("*",(req,res)=> res.status(404).send({status:"error",message:"Route not found."}))
+router.post("*",(req,res)=> res.status(404).send({status:"error",message:"Route not found."}))
+router.put("*",(req,res)=> res.status(404).send({status:"error",message:"Route not found."}))
+router.patch("*",(req,res)=> res.status(404).send({status:"error",message:"Route not found."}))
 
 export default router
