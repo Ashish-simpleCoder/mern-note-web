@@ -4,7 +4,7 @@ import { Cookie } from '../lib/cookie'
 
 export async function registerService(body: { email: string; password: string }, options?: { onSuccess?: () => void }) {
    try {
-      const res = await AxiosInstance.post('/api/v1/user', body)
+      const res = await AxiosInstance.post('/api/user/register', body)
       if (res.data.status == 'success') {
          // show success toast
          toast.success(res.data.message)
