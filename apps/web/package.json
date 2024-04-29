@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "@tanstack/react-query": "^5.32.0",
     "axios": "^1.6.8",
+    "classic-react-components": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
