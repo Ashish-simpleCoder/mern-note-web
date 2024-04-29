@@ -38,7 +38,7 @@ export async function getAllNotes(req: Request, res: Response, next: NextFunctio
             message: 'Failed to get the notes.',
          })
       }
-      res.status(201).send({
+      res.status(200).send({
          status: 'success',
          message: 'Notes fetched successfully.',
          notes,
