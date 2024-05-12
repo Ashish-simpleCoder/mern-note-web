@@ -1,27 +1,33 @@
 // @ts-nocheck
 import type { NextFunction, Request, Response } from 'express'
+import { compare } from 'bcrypt'
+
 import { generateJwtToken } from '../lib/generate-jwt-token'
 import { UserModel } from '../models/user.model'
-import { compare } from 'bcrypt'
+import * as otpService from '../services/otp.service'
+import { generateOtp } from '../utils/generate-otp'
+import { MongooseError } from 'mongoose'
 
 export async function userRegister(req: Request, res: Response, next: NextFunction) {
    try {
-      const user = await UserModel.create(req.body)
+      const otp_obj = generateOtp()
+      const user = await UserModel.create({ ...req.body, ...otp_obj })
       if (!user) {
          return res.status(500).send({
             status: 'error',
             message: 'Failed to register the user.',
          })
       }
+
+      await otpService.sendEmailOtp('verify-email', { to_email: req.body.email, otp: otp_obj.otp, expire: '2 minutes' })
+
       res.status(201).send({
          status: 'success',
-         message: 'User registered successfully.',
-         id: user._id,
-         accessToken: generateJwtToken({ email: user.email, _id: user._id }),
-         refreshToken: generateJwtToken({ email: user.email, _id: user._id }, { expiresIn: '1 day' }),
+         message: 'We have sent an OTP on your email for verification.',
       })
    } catch (err) {
-      if (err.message.includes('validation failed')) {
+      console.log(err)
+      if (err instanceof MongooseError && err.message.includes('validation failed')) {
          const errObj = {}
          Object.keys(err.errors).forEach((key) => {
             errObj[key] = err.errors[key].message

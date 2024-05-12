@@ -8,6 +8,7 @@ const router = Router()
 
 // auth
 router.post('/api/user/register', isBodyEmpty, userRegister)
+router.post('/api/user/otp-verify', isBodyEmpty, userRegister)
 router.post('/api/user/login', isBodyEmpty, userLogin)
 router.route('/api/user/logout').get(userLogout)
 
