@@ -17,6 +17,16 @@ const userSchema = new mongoose.Schema({
       minlength: [4, 'password length must be greater than 4 characters'],
       timestamp: true,
    },
+   otp: {
+      type: String,
+   },
+   otp_expires_at: {
+      type: Date,
+   },
+   is_verified: {
+      type: Boolean,
+      default: false,
+   },
 })
 
 userSchema.pre('save', async function (next) {
