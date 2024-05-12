@@ -6,7 +6,6 @@ import { ENV } from '../config/env.config'
 import { EmailTemplates } from '../email-templates'
 import { renderView } from '../lib/render-template'
 
-
 // nodemailer
 export async function sendEmailOtp(
    template_type: EmailTemplate,
