@@ -13,4 +13,12 @@ export const ENV = {
       cluster_url: process.env.CLUSTER_URL!,
       dialect: process.env.DB_DIALECT as Dialect | undefined,
    },
+   sg_api_key: process.env.SG_API_KEY!,
+   emailing: {
+      from_email: process.env.FROM_EMAIL!,
+      user: process.env.USER_ID!,
+      password: process.env.PASSWORD!,
+   },
+   otp_length: Number(process.env.OTP_LENGTH!),
+   otp_expire_min: Number(process.env.OTP_EXPIRE_MIN!),
 } as const
