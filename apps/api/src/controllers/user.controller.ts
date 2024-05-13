@@ -8,7 +8,7 @@ import * as otpService from '../services/otp.service'
 import { generateOtp } from '../utils/generate-otp'
 import { MongooseError } from 'mongoose'
 
-export async function userRegister(req: Request, res: Response, next: NextFunction) {
+export async function register(req: Request, res: Response, next: NextFunction) {
    try {
       const otp_obj = generateOtp()
       const user = await UserModel.create({ ...req.body, ...otp_obj })
@@ -46,7 +46,7 @@ export async function userRegister(req: Request, res: Response, next: NextFuncti
    }
 }
 
-export async function userLogin(req: Request, res: Response, next: NextFunction) {
+export async function login(req: Request, res: Response, next: NextFunction) {
    try {
       const { email, password } = req.body
 
@@ -73,7 +73,7 @@ export async function userLogin(req: Request, res: Response, next: NextFunction)
    }
 }
 
-export async function userLogout(req: Request, res: Response, next: NextFunction) {
+export async function logout(req: Request, res: Response, next: NextFunction) {
    try {
    } catch (err) {}
 }
