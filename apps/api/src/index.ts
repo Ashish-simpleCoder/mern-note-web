@@ -26,10 +26,12 @@ app.use(helmet())
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(router)
 
 // health check route
-app.get('/', (req, res) => res.end('hello world'))
+app.get('/', (req, res) => {
+   res.end('hello world')
+})
 
+app.use(router)
 // listen to server
 app.listen(ENV.port, () => console.log(`server running on ${ENV.port}`))
