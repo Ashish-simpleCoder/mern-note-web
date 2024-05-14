@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import * as userController from '../controllers/user.controller'
-import { getAllNotes, noteCreate, noteDelete, noteUpdate } from '../controllers/note.controller'
+import * as noteController from '../controllers/note.controller'
 import { authUser } from '../middleware/auth-user'
 import { isBodyEmpty } from '../middleware/is-body-empty'
 
@@ -14,9 +14,9 @@ router.post('/api/user/login', isBodyEmpty, userController.login)
 router.route('/api/user/logout').get(userController.logout)
 
 // notes
-router.post('/api/user/note', authUser, isBodyEmpty, noteCreate)
-router.get('/api/user/notes', authUser, getAllNotes)
-router.route('/api/user/note/:id').patch(authUser, noteUpdate).delete(authUser, noteDelete)
+router.post('/api/user/note', authUser, isBodyEmpty, noteController.noteCreate)
+router.get('/api/user/notes', authUser, noteController.getAllNotes)
+router.route('/api/user/note/:id').patch(authUser, noteController.noteUpdate).delete(authUser, noteController.noteDelete)
 
 // route not found
 router.get('*', (req, res) => res.status(404).send({ status: 'error', message: 'Route not found.' }))
