@@ -7,17 +7,10 @@ import { isBodyEmpty } from '../middleware/is-body-empty'
 
 const router = Router()
 
-router.use('*', (req, res, next) => {
-   if (req.method == 'POST') {
-      isBodyEmpty(req, res, next)
-   }
-   next()
-})
-
 // auth
-router.post('/api/user/register', userController.register)
-router.post('/api/user/otp-verify', userController.register)
-router.post('/api/user/login', userController.login)
+router.post('/api/user/register', isBodyEmpty, userController.register)
+router.post('/api/user/otp-verify', isBodyEmpty, userController.register)
+router.post('/api/user/login', isBodyEmpty, userController.login)
 router.route('/api/user/logout').get(userController.logout)
 
 // notes
