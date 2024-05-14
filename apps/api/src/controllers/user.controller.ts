@@ -7,6 +7,7 @@ import { UserModel } from '../models/user.model'
 import * as otpService from '../services/otp.service'
 import { generateOtp } from '../utils/generate-otp'
 import { MongooseError } from 'mongoose'
+import { logger } from '../lib/logger'
 
 export async function register(req: Request, res: Response, next: NextFunction) {
    try {
@@ -26,12 +27,12 @@ export async function register(req: Request, res: Response, next: NextFunction) 
          message: 'We have sent an OTP on your email for verification.',
       })
    } catch (err) {
-      console.log(err)
+      logger.error('Error on creating user: ', err)
       if (err instanceof MongooseError && err.message.includes('validation failed')) {
-         const errObj = {}
-         Object.keys(err.errors).forEach((key) => {
-            errObj[key] = err.errors[key].message
-         })
+         const errObj = Object.keys(err.errors).reduce((acc, key) => {
+            acc[key] = err.errors[key].message
+            return acc
+         }, {})
          return res.status(400).send({
             status: 'error',
             message: 'Failed to register the user.',
@@ -69,6 +70,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
          refreshToken: generateJwtToken({ email: user.email, _id: user._id }, { expiresIn: '1 day' }),
       })
    } catch (err) {
+      logger.error('Error on login: ', err)
       res.status(400).send({ status: 'error', message: 'Invalid credentials' })
    }
 }

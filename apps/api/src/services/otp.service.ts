@@ -5,6 +5,7 @@ import nodeMailer from 'nodemailer'
 import { ENV } from '../config/env.config'
 import { EmailTemplates } from '../email-templates'
 import { renderView } from '../lib/render-template'
+import { logger } from '../lib/logger'
 
 // nodemailer
 export async function sendEmailOtp(
@@ -20,7 +21,7 @@ export async function sendEmailOtp(
       }
       sendEmail(payload)
    } catch (err) {
-      console.log(JSON.stringify(err))
+      logger.error('Error on sending email otp: ', err)
    }
 }
 
@@ -39,13 +40,11 @@ export async function sendEmail(payload: nodeMailer.SendMailOptions) {
 
       transporter.sendMail(payload, (error) => {
          if (error) {
-            console.log('email error', error)
-         } else {
-            console.log('sent')
+            logger.error('Error on sending email: ', error)
          }
       })
    } catch (err) {
-      console.log(JSON.stringify(err))
+      logger.error('Error on sending email: ', err)
    }
 }
 
