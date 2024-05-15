@@ -58,6 +58,11 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 export async function login(req: Request, res: Response, next: NextFunction) {
    try {
       const { email, password } = req.body
+      const schemaError = LoginSchema.safeParse(req.body)
+      if (schemaError.success === false) {
+         const errObj = generateZodErrorObj(schemaError.error.issues)
+         return res.status(400).send({ status: 'error', error: errObj })
+      }
 
       const user = await UserModel.findOne({ email })
       if (!user) {
