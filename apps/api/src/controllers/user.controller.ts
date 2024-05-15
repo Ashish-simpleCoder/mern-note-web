@@ -8,9 +8,17 @@ import * as otpService from '../services/otp.service'
 import { generateOtp } from '../utils/generate-otp'
 import { MongooseError } from 'mongoose'
 import { logger } from '../lib/logger'
+import { LoginSchema } from '../schema/auth.schema'
+import { generateZodErrorObj } from '../utils/generator-zod-error-obj'
 
 export async function register(req: Request, res: Response, next: NextFunction) {
    try {
+      const schemaError = LoginSchema.safeParse(req.body)
+      if (schemaError.success === false) {
+         const errObj = generateZodErrorObj(schemaError.error.issues)
+         return res.status(400).send({ status: 'error', error: errObj })
+      }
+
       const otp_obj = generateOtp()
       const user = await UserModel.create({ ...req.body, ...otp_obj })
       if (!user) {

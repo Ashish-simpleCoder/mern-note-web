@@ -16,7 +16,10 @@ router.route('/api/user/logout').get(userController.logout)
 // notes
 router.post('/api/user/note', authUser, isBodyEmpty, noteController.noteCreate)
 router.get('/api/user/notes', authUser, noteController.getAllNotes)
-router.route('/api/user/note/:id').patch(authUser, noteController.noteUpdate).delete(authUser, noteController.noteDelete)
+router
+   .route('/api/user/note/:id')
+   .patch(authUser, noteController.noteUpdate)
+   .delete(authUser, noteController.noteDelete)
 
 // route not found
 router.get('*', (req, res) => res.status(404).send({ status: 'error', message: 'Route not found.' }))
