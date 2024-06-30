@@ -10,19 +10,22 @@ import { generateOtp } from '../utils/generate-otp'
 import { logger } from '../lib/logger'
 import { LoginSchema, SignUpSchema } from '../schema/auth.schema'
 import { generateZodErrorObj } from '../utils/generator-zod-error-obj'
+import { API_STATUS_RECORDS } from '@repo/constants/api.const'
 
 export async function register(req: Request, res: Response, next: NextFunction) {
    try {
       const schemaError = SignUpSchema.safeParse(req.body)
       if (schemaError.success === false) {
          const errObj = generateZodErrorObj(schemaError.error.issues)
-         return res.status(400).send({ status: 'error', error: errObj, message: 'Invalid credentials.' })
+         return res
+            .status(API_STATUS_RECORDS['bad-request'])
+            .send({ status: 'error', errors: errObj, message: 'Invalid credentials.' })
       }
 
       const otp_obj = generateOtp()
       const user = await UserModel.create({ ...req.body, ...otp_obj })
       if (!user) {
-         return res.status(500).send({
+         return res.status(API_STATUS_RECORDS['unprocessable-entity']).send({
             status: 'error',
             message: 'Failed to register the user.',
          })
@@ -30,7 +33,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
 
       await otpService.sendEmailOtp('verify-email', { to_email: req.body.email, otp: otp_obj.otp, expire: '2 minutes' })
 
-      res.status(201).send({
+      res.status(API_STATUS_RECORDS.created).send({
          status: 'success',
          message: 'We have sent an OTP on your email for verification.',
       })
@@ -44,13 +47,13 @@ export async function register(req: Request, res: Response, next: NextFunction) 
          return res.status(400).send({
             status: 'error',
             message: 'Failed to register the user.',
-            error: errObj,
+            errors: errObj,
          })
       }
-      res.status(500).send({
+      res.status(API_STATUS_RECORDS['unprocessable-entity']).send({
          status: 'error',
          message: 'Failed to register the user.',
-         error: err,
+         errors: err,
       })
    }
 }
@@ -61,17 +64,17 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       const schemaError = LoginSchema.safeParse(req.body)
       if (schemaError.success === false) {
          const errObj = generateZodErrorObj(schemaError.error.issues)
-         return res.status(400).send({ status: 'error', error: errObj })
+         return res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', errors: errObj })
       }
 
       const user = await UserModel.findOne({ email })
       if (!user) {
-         return res.status(400).send({ status: 'error', message: 'Invalid credentials' })
+         return res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
       }
 
       const isPasswordMatched = await compare(password, user.password)
       if (!isPasswordMatched) {
-         return res.status(400).send({ status: 'error', message: 'Invalid credentials' })
+         return res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
       }
 
       res.send({
@@ -84,7 +87,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       })
    } catch (err) {
       logger.error('Error on login: ', err)
-      res.status(400).send({ status: 'error', message: 'Invalid credentials' })
+      res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
    }
 }
 
