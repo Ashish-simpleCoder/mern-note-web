@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import * as userController from '../controllers/user.controller'
 import * as noteController from '../controllers/note.controller'
+import * as otpController from '../controllers/otp.controller'
 import { authUser } from '../middleware/auth-user'
 import { isBodyEmpty } from '../middleware/is-body-empty'
 
@@ -9,7 +10,7 @@ const router = Router()
 
 // auth
 router.post('/api/user/register', isBodyEmpty, userController.register)
-router.post('/api/user/otp-verify', isBodyEmpty, userController.register)
+router.post('/api/user/otp-verify', isBodyEmpty, otpController.verifyOtp)
 router.post('/api/user/login', isBodyEmpty, userController.login)
 router.route('/api/user/logout').get(userController.logout)
 

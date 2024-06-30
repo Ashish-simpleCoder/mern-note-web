@@ -1,12 +1,12 @@
 // @ts-nocheck
 import type { NextFunction, Request, Response } from 'express'
 import { compare } from 'bcrypt'
+import { MongooseError } from 'mongoose'
 
 import { generateJwtToken } from '../lib/generate-jwt-token'
 import { UserModel } from '../models/user.model'
 import * as otpService from '../services/otp.service'
 import { generateOtp } from '../utils/generate-otp'
-import { MongooseError } from 'mongoose'
 import { logger } from '../lib/logger'
 import { LoginSchema, SignUpSchema } from '../schema/auth.schema'
 import { generateZodErrorObj } from '../utils/generator-zod-error-obj'
@@ -16,7 +16,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
       const schemaError = SignUpSchema.safeParse(req.body)
       if (schemaError.success === false) {
          const errObj = generateZodErrorObj(schemaError.error.issues)
-         return res.status(400).send({ status: 'error', error: errObj })
+         return res.status(400).send({ status: 'error', error: errObj, message: 'Invalid credentials.' })
       }
 
       const otp_obj = generateOtp()
