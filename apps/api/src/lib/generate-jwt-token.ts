@@ -1,3 +1,4 @@
+import type { Prettify } from '@repo/types'
 import type { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { ENV } from '../config/env.config'
@@ -13,7 +14,7 @@ export function generateJwtToken(
       email: string
       _id: Types.ObjectId
    },
-   options?: Options
+   options?: Prettify<Options>
 ) {
    return jwt.sign(values, ENV.token_secret, {
       expiresIn: options?.expiresIn ?? Expires.in('1 hour'),

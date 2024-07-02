@@ -8,6 +8,9 @@ import { API_STATUS_RECORDS } from '@repo/constants/api.const'
 
 export async function verifyOtp(req: Request, res: Response, next: NextFunction) {
    try {
+      // get time for comparing the otp expiration
+      const time = new Date()
+
       const schemaResult = VerifyOtpSchema.safeParse(req.body)
       if (schemaResult.success === false) {
          const errObj = generateZodErrorObj(schemaResult.error.issues)
@@ -22,8 +25,16 @@ export async function verifyOtp(req: Request, res: Response, next: NextFunction)
             .status(API_STATUS_RECORDS['bad-request'])
             .send({ status: 'error', message: 'Otp verification failed.' })
       }
-      await user.updateOne({ otp: '', otp_expires_at: '', is_verified: true })
 
+      // otp is expired
+      if (user.otp_expires_at && time > user.otp_expires_at) {
+         return res.status(API_STATUS_RECORDS['bad-request']).send({
+            status: 'error',
+            message: 'Otp expired.',
+         })
+      }
+
+      await user.updateOne({ otp: '', otp_expires_at: '', is_verified: true })
       res.send({
          status: 'success',
          message: 'Otp verified successfully.',
