@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "pre:build": "pnpm clean",
     "build": "pnpm clean && tsc",
     "start": "node build/index.js",
     "clean": "rm -rf build"

@@ -1,6 +1,5 @@
 import type { ObjectId } from 'mongoose'
 import mongoose from 'mongoose'
-import validator from 'validator'
 import { hash, genSalt } from 'bcrypt'
 
 const userSchema = new mongoose.Schema({
@@ -8,13 +7,11 @@ const userSchema = new mongoose.Schema({
       type: String,
       unique: true,
       required: [true, 'email is required'],
-      validate: [validator.isEmail, 'please enter valid email'],
       timestamp: true,
    },
    password: {
       type: String,
       required: [true, 'password is required'],
-      minlength: [4, 'password length must be greater than 4 characters'],
       timestamp: true,
    },
    otp: {

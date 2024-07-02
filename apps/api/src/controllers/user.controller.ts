@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { NextFunction, Request, Response } from 'express'
 import { compare } from 'bcrypt'
 import { MongooseError } from 'mongoose'
@@ -19,18 +18,11 @@ export async function register(req: Request, res: Response, next: NextFunction) 
          const errObj = generateZodErrorObj(schemaError.error.issues)
          return res
             .status(API_STATUS_RECORDS['bad-request'])
-            .send({ status: 'error', errors: errObj, message: 'Invalid credentials.' })
+            .send({ status: 'error', errors: errObj, message: 'validation error.' })
       }
 
       const otp_obj = generateOtp()
-      const user = await UserModel.create({ ...req.body, ...otp_obj })
-      if (!user) {
-         return res.status(API_STATUS_RECORDS['unprocessable-entity']).send({
-            status: 'error',
-            message: 'Failed to register the user.',
-         })
-      }
-
+      await UserModel.create({ ...req.body, ...otp_obj })
       await otpService.sendEmailOtp('verify-email', { to_email: req.body.email, otp: otp_obj.otp, expire: '2 minutes' })
 
       res.status(API_STATUS_RECORDS.created).send({
@@ -39,20 +31,29 @@ export async function register(req: Request, res: Response, next: NextFunction) 
       })
    } catch (err) {
       logger.error('Error on creating user: ', err)
-      if (err instanceof MongooseError && err.message.includes('validation failed')) {
+      if (err instanceof MongooseError && err.message.includes('validation error.')) {
+         // @ts-ignore
          const errObj = Object.keys(err.errors).reduce((acc, key) => {
+            // @ts-ignore
             acc[key] = err.errors[key].message
             return acc
          }, {})
-         return res.status(400).send({
+         return res.status(API_STATUS_RECORDS['bad-request']).send({
             status: 'error',
-            message: 'Failed to register the user.',
+            message: 'Failed to register the user. Please try again.',
             errors: errObj,
+         })
+      }
+      // @ts-ignore
+      if ('errorResponse' in err && err.errorResponse.code && err.errorResponse.code == 11000) {
+         return res.status(API_STATUS_RECORDS['bad-request']).send({
+            status: 'error',
+            message: 'Email is already registered. Please provide different email.',
          })
       }
       res.status(API_STATUS_RECORDS['unprocessable-entity']).send({
          status: 'error',
-         message: 'Failed to register the user.',
+         message: 'Failed to register the user. Please try again.',
          errors: err,
       })
    }
@@ -69,11 +70,13 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
       const user = await UserModel.findOne({ email })
       if (!user) {
+         logger.error('Login: User not found with email=', email)
          return res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
       }
 
       const isPasswordMatched = await compare(password, user.password)
       if (!isPasswordMatched) {
+         logger.error('Login: Password is invalid for email=', email)
          return res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
       }
 
@@ -86,7 +89,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
          refreshToken: generateJwtToken({ email: user.email, _id: user._id }, { expiresIn: '1 day' }),
       })
    } catch (err) {
-      logger.error('Error on login: ', err)
+      logger.error('Login: Error=', err)
       res.status(API_STATUS_RECORDS['bad-request']).send({ status: 'error', message: 'Invalid credentials' })
    }
 }
