@@ -34,7 +34,9 @@ export async function verifyOtp(req: Request, res: Response, next: NextFunction)
          })
       }
 
+      // reset otp details and update verification status
       await user.updateOne({ otp: '', otp_expires_at: '', is_verified: true })
+
       res.send({
          status: 'success',
          message: 'Otp verified successfully.',
